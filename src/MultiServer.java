@@ -1,51 +1,34 @@
-import Faculty.Exam;
 import Faculty.GroupOperator;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStreamReader;
-import java.io.PrintWriter;
+import java.io.*;
 import java.net.ServerSocket;
 import java.net.Socket;
+import java.nio.charset.Charset;
+import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 
 public class MultiServer
 {
     private ServerSocket serverSocket;
-    private final GroupOperator go = new GroupOperator();
+    private static GroupOperator go = new GroupOperator();
     private static String goJSON;
+    private final static String filePath = "info.txt";
 
     public void start(int port) throws IOException
     {
         GsonBuilder gsonBuilder = new GsonBuilder();
         Gson gson = gsonBuilder.create();
-        go.addExam("11", new Exam("Дискретная математика", "Костенко К.И.",
-                131, "11.01.2020", "10:00", 10, 0,
-                "Можно досдать зачеты."));
-        go.addExam("11", new Exam("Математический анализ", "Сеидова Н.М.",
-                307, "15.01.2020", "08:00", 7, 1,
-                "Лекциями пользуются те, кто их писал после проверки тетради, максимум 5 минут."));
-        go.addExam("11", new Exam("Основы программирования", "Добровольская Н.Ю.",
-                131, "20.01.2020", "09:00", 15, 0,
-                "После подготовки будут доп. вопросы."));
-        go.addExam("11", new Exam("Линейная алгебра", "Пелипенко Е.Ю.",
-                305, "24.01.2020", "08:00", 5, 0,
-                "На 3 - определения и теоремы без доказательств."));
-
-        go.addExam("12", new Exam("Математический анализ", "Сеидова Н.М.",
-                309, "11.01.2020", "10:00", 7, 1,
-                "Лекциями пользуются те, кто их писал после проверки тетради, максимум 5 минут."));
-        go.addExam("12", new Exam("Дискретная математика", "Костенко К.И.",
-                129, "15.01.2020", "08:00", 10, 0,
-                "Можно досдать зачеты."));
-        go.addExam("12", new Exam("Линейная алгебра", "Пелипенко Е.Ю.",
-                149, "20.01.2020", "08:00", 5, 0,
-                "На 3 - определения и теоремы без доказательств."));
-        go.addExam("12", new Exam("Основы программирования", "Добровольская Н.Ю.",
-                101, "24.01.2020", "12:00", 15, 0,
-                "После подготовки будут доп. вопросы."));
-        goJSON = gson.toJson(go);
+        try {
+            goJSON = readFile(filePath, StandardCharsets.UTF_8);
+        }
+        catch (IOException e)
+        {
+            e.printStackTrace();
+        }
+        go = gson.fromJson(goJSON, GroupOperator.class);
 
         serverSocket = new ServerSocket(port);
         while (true)
@@ -109,6 +92,21 @@ public class MultiServer
                 {
                     out.println(goJSON);
                 }
+                if (inputLine != null)
+                {
+                    if ('d' == inputLine.charAt(0))
+                    {
+                        GsonBuilder gsonBuilder = new GsonBuilder();
+                        Gson gson = gsonBuilder.create();
+                        String[] ids = inputLine.substring(1).split(",");
+                        int groupID = Integer.parseInt(ids[0]);
+                        int examID = Integer.parseInt(ids[1]);
+                        go.delExam(groupID, examID);
+                        goJSON = gson.toJson(go);
+                        writeFile(filePath, goJSON);
+                        out.println(goJSON);
+                    }
+                }
             }
 
             try
@@ -128,6 +126,25 @@ public class MultiServer
             {
                 e.printStackTrace();
             }
+        }
+    }
+
+    public static String readFile(String path, Charset encoding) throws IOException
+    {
+        byte[] encoded = Files.readAllBytes(Paths.get(path));
+        return new String(encoded, encoding);
+    }
+
+    public static void writeFile(String path, String text)
+    {
+        try(FileWriter writer = new FileWriter(path, false))
+        {
+            writer.write(text);
+            writer.flush();
+        }
+        catch(IOException ex)
+        {
+            System.out.println(ex.getMessage());
         }
     }
 }

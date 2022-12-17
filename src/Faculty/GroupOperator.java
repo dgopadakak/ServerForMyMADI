@@ -26,4 +26,9 @@ public class GroupOperator
             groups.add(new Group(groupName, tempArrayList));
         }
     }
+
+    public void delExam(int groupId, int examID)
+    {
+        groups.get(groupId).listOfExams.remove(examID);
+    }
 }
