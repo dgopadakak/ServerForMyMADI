@@ -130,6 +130,17 @@ public class MultiServer
                         goJSON = gson.toJson(go);
                         writeFile(filePath, goJSON);
                     }
+                    if ('a' == inputLine.charAt(0))
+                    {
+                        GsonBuilder gsonBuilder = new GsonBuilder();
+                        Gson gson = gsonBuilder.create();
+                        String[] parts = inputLine.substring(1).split("##");
+                        Exam tempExam = gson.fromJson(parts[1], Exam.class);
+                        go.addExam(parts[0], tempExam);
+                        goJSON = gson.toJson(go);
+                        writeFile(filePath, goJSON);
+                        out.println(goJSON);
+                    }
                 }
             }
 
