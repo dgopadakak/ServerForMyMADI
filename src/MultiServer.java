@@ -1,3 +1,4 @@
+import Faculty.Exam;
 import Faculty.GroupOperator;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
@@ -105,6 +106,29 @@ public class MultiServer
                         goJSON = gson.toJson(go);
                         writeFile(filePath, goJSON);
                         out.println(goJSON);
+                    }
+                    if ('e' == inputLine.charAt(0))
+                    {
+                        GsonBuilder gsonBuilder = new GsonBuilder();
+                        Gson gson = gsonBuilder.create();
+                        String[] parts = inputLine.substring(1).split("##");
+                        String[] ids = parts[0].split(",");
+                        int groupID = Integer.parseInt(ids[0]);
+                        int examID = Integer.parseInt(ids[1]);
+                        Exam tempExam = gson.fromJson(parts[1], Exam.class);
+                        go.editExam(groupID, examID, tempExam);
+                        goJSON = gson.toJson(go);
+                        writeFile(filePath, goJSON);
+                        out.println(goJSON);
+                    }
+                    if ('u' == inputLine.charAt(0))
+                    {
+                        GsonBuilder gsonBuilder = new GsonBuilder();
+                        Gson gson = gsonBuilder.create();
+                        GroupOperator tempGo = gson.fromJson(inputLine.substring(1), GroupOperator.class);
+                        go.setGroups(tempGo.getGroups());
+                        goJSON = gson.toJson(go);
+                        writeFile(filePath, goJSON);
                     }
                 }
             }
