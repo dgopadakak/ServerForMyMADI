@@ -95,7 +95,7 @@ public class MultiServer
                 }
                 if (inputLine != null)
                 {
-                    if ('d' == inputLine.charAt(0))
+                    if ('d' == inputLine.charAt(0))     // d0,1
                     {
                         GsonBuilder gsonBuilder = new GsonBuilder();
                         Gson gson = gsonBuilder.create();
@@ -107,7 +107,7 @@ public class MultiServer
                         writeFile(filePath, goJSON);
                         out.println(goJSON);
                     }
-                    if ('e' == inputLine.charAt(0))
+                    if ('e' == inputLine.charAt(0))     // e0,3##json
                     {
                         GsonBuilder gsonBuilder = new GsonBuilder();
                         Gson gson = gsonBuilder.create();
@@ -121,7 +121,7 @@ public class MultiServer
                         writeFile(filePath, goJSON);
                         out.println(goJSON);
                     }
-                    if ('u' == inputLine.charAt(0))
+                    if ('u' == inputLine.charAt(0))     // ujson
                     {
                         GsonBuilder gsonBuilder = new GsonBuilder();
                         Gson gson = gsonBuilder.create();
@@ -132,7 +132,7 @@ public class MultiServer
                     }
                     if ('a' == inputLine.charAt(0))
                     {
-                        GsonBuilder gsonBuilder = new GsonBuilder();
+                        GsonBuilder gsonBuilder = new GsonBuilder();        // agroupName##json
                         Gson gson = gsonBuilder.create();
                         String[] parts = inputLine.substring(1).split("##");
                         Exam tempExam = gson.fromJson(parts[1], Exam.class);
