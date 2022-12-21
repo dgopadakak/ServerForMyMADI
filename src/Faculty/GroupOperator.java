@@ -5,6 +5,7 @@ import java.util.Objects;
 
 public class GroupOperator
 {
+    private int id;
     private ArrayList<Group> groups = new ArrayList<>();
 
     public void addExam(String groupName, Exam exam)
